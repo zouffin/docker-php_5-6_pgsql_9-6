@@ -1,0 +1,35 @@
+###############################################################################
+#                          Generated on phpdocker.io                          #
+###############################################################################
+version: "3.1"
+services:
+
+    postgres:
+      image: postgres:9.6-alpine
+      container_name: translate-postgres
+      working_dir: /application
+      volumes:
+        - .:/application
+      environment:
+        - POSTGRES_USER=root
+        - POSTGRES_PASSWORD=ptcmba51
+        - POSTGRES_DB=ptcmba51
+
+    webserver:
+      image: nginx:alpine
+      container_name: translate-webserver
+      working_dir: /application
+      volumes:
+          - .:/application
+          - ./php_pgsql_docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      ports:
+       - "1025:80"
+
+    php-fpm:
+      build: php_pgsql_docker/php-fpm
+      container_name: translate-php-fpm
+      working_dir: /application
+      volumes:
+        - .:/application
+        - ./php_pgsql_docker/php-fpm/php-ini-overrides.ini:/etc/php5/fpm/conf.d/99-overrides.ini
+
